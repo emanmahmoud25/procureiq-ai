@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Search History — Procurement AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --dark:#0d1117;--dark2:#161b22;--dark3:#21262d;
+      --accent:#00d4aa;--purple:#a78bfa;--gold:#f0b429;--red:#f85149;
+      --text:#e6edf3;--muted:#8b949e;--border:rgba(255,255,255,.08);--radius:12px;
+      --fs-xs:.72rem;--fs-sm:.82rem;--fs-base:.9rem;--fs-md:1rem;--fs-lg:1.15rem;
+      --fw-normal:400;--fw-medium:500;--fw-semi:600;
+    }
+    body{font-family:'Inter',system-ui,sans-serif;font-size:var(--fs-base);font-weight:var(--fw-normal);background:var(--dark);color:var(--text);line-height:1.6;min-height:100vh}
+
+    /* NAV */
+    .top-nav{background:var(--dark2);border-bottom:1px solid var(--border);padding:.6rem 1.75rem;display:flex;gap:.75rem;align-items:center}
+    .top-nav a{color:var(--muted);text-decoration:none;font-size:var(--fs-sm);font-weight:var(--fw-medium);padding:.28rem .65rem;border-radius:6px;transition:color .2s,background .2s}
+    .top-nav a:hover,.top-nav a.active{color:var(--accent);background:rgba(0,212,170,.08)}
+    .top-nav-brand{font-size:.88rem;font-weight:var(--fw-semi);color:var(--accent);margin-right:auto;letter-spacing:-.01em}
+
+    /* HERO */
+    .hero{background:linear-gradient(135deg,#0d1117 0%,#0a2540 40%,#0d1117 100%);border-bottom:1px solid var(--border);padding:2.5rem 2rem 2rem;text-align:center}
+    .hero-badge{display:inline-block;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.25);color:var(--purple);font-size:var(--fs-xs);font-weight:var(--fw-semi);letter-spacing:.1em;text-transform:uppercase;padding:.28rem .85rem;border-radius:999px;margin-bottom:.9rem}
+    .hero h1{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:var(--fw-semi);letter-spacing:-.02em;margin-bottom:.4rem}
+    .hero h1 span{color:var(--accent)}
+    .hero-sub{color:var(--muted);font-size:var(--fs-sm)}
+
+    /* STATS */
+    .stats-strip{display:flex;border-bottom:1px solid var(--border);background:var(--dark2)}
+    .stat-item{flex:1;text-align:center;padding:1.1rem .75rem;border-right:1px solid var(--border)}
+    .stat-item:last-child{border-right:none}
+    .stat-num{font-size:1.5rem;font-weight:var(--fw-semi);color:var(--accent);display:block;letter-spacing:-.01em}
+    .stat-num.purple{color:var(--purple)}
+    .stat-num.gold{color:var(--gold)}
+    .stat-num.red{color:var(--red)}
+    .stat-label{font-size:var(--fs-xs);color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+
+    /* CONTENT */
+    .container{max-width:920px;margin:0 auto;padding:2rem 1.5rem}
+    .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+    .section-title{font-size:var(--fs-base);font-weight:var(--fw-semi);letter-spacing:-.01em}
+    .refresh-btn{font-size:var(--fs-xs);color:var(--muted);background:none;border:1px solid var(--border);border-radius:6px;padding:.25rem .65rem;cursor:pointer;transition:color .2s,border-color .2s}
+    .refresh-btn:hover{color:var(--accent);border-color:rgba(0,212,170,.35)}
+
+    /* CARDS */
+    .sessions-list{display:flex;flex-direction:column;gap:.85rem}
+    .session-card{background:var(--dark2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .2s}
+    .session-card:hover{border-color:rgba(0,212,170,.2)}
+    .session-card.status-completed{border-left:2px solid var(--accent)}
+    .session-card.status-failed{border-left:2px solid var(--red)}
+    .session-card.status-running{border-left:2px solid var(--gold)}
+
+    .card-header{display:flex;align-items:center;gap:.65rem;padding:.9rem 1.1rem;cursor:pointer;user-select:none}
+    .card-header:hover .card-title{color:var(--accent)}
+
+    .status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+    .dot-completed{background:var(--accent)}
+    .dot-failed{background:var(--red)}
+    .dot-running{background:var(--gold);animation:pulse 1.4s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+    .card-title{font-size:var(--fs-sm);font-weight:var(--fw-semi);flex:1;transition:color .2s;letter-spacing:-.01em}
+    .card-meta{font-size:var(--fs-xs);color:var(--muted)}
+    .card-target{font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--purple)}
+
+    .status-badge{font-size:.62rem;font-weight:var(--fw-semi);text-transform:uppercase;padding:.17rem .5rem;border-radius:4px;letter-spacing:.06em}
+    .badge-completed{background:rgba(0,212,170,.12);color:var(--accent);border:1px solid rgba(0,212,170,.22)}
+    .badge-failed{background:rgba(248,81,73,.12);color:var(--red);border:1px solid rgba(248,81,73,.22)}
+    .badge-running{background:rgba(240,180,41,.12);color:var(--gold);border:1px solid rgba(240,180,41,.22)}
+
+    .card-actions{display:flex;gap:.45rem;padding:0 1.1rem .8rem;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;gap:.3rem;font-size:var(--fs-xs);font-weight:var(--fw-medium);padding:.32rem .75rem;border-radius:6px;text-decoration:none;cursor:pointer;border:none;transition:opacity .2s,background .2s;font-family:inherit}
+    .btn-primary{background:var(--accent);color:#0d1117}
+    .btn-primary:hover{opacity:.85}
+    .btn-secondary{background:rgba(167,139,250,.12);color:var(--purple);border:1px solid rgba(167,139,250,.25)}
+    .btn-secondary:hover{background:rgba(167,139,250,.22)}
+    .btn-ghost{background:var(--dark3);color:var(--muted);border:1px solid var(--border)}
+    .btn-ghost:hover{color:var(--text);border-color:rgba(255,255,255,.18)}
+
+    .top-chip{font-size:var(--fs-xs);color:var(--muted);background:var(--dark3);border:1px solid var(--border);border-radius:5px;padding:.2rem .55rem;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .top-chip span{color:var(--gold)}
+
+    /* STEPS PANEL */
+    .steps-panel{border-top:1px solid var(--border);padding:.9rem 1.1rem;display:none;background:var(--dark3)}
+    .steps-panel.open{display:block}
+    .steps-title{font-size:var(--fs-xs);font-weight:var(--fw-semi);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.65rem}
+    .step-list{display:flex;flex-direction:column;gap:.45rem}
+    .step-item{display:flex;align-items:center;gap:.55rem;font-size:var(--fs-xs)}
+    .step-num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:var(--fw-semi);flex-shrink:0;background:rgba(0,212,170,.12);color:var(--accent);border:1px solid rgba(0,212,170,.22)}
+    .step-label{flex:1;color:var(--text)}
+    .step-meta{font-size:.65rem;color:var(--muted)}
+    .step-expand{font-size:var(--fs-xs);color:var(--purple);cursor:pointer;background:none;border:none;padding:0;font-family:inherit}
+    .step-expand:hover{text-decoration:underline}
+    .step-json{background:var(--dark);border-radius:5px;padding:.55rem .75rem;font-size:.68rem;font-family:'DM Mono',monospace;color:#9cdcfe;margin-top:.3rem;overflow-x:auto;max-height:200px;overflow-y:auto;white-space:pre-wrap;display:none;border:1px solid var(--border)}
+    .step-json.open{display:block}
+
+    /* EMPTY */
+    .empty-state{text-align:center;padding:3.5rem 2rem;color:var(--muted)}
+    .empty-state h3{font-size:var(--fs-md);font-weight:var(--fw-semi);margin-bottom:.4rem;color:var(--text)}
+    .empty-icon{font-size:2.5rem;margin-bottom:.9rem;opacity:.35}
+
+    @media(max-width:600px){.stats-strip{flex-wrap:wrap}.stat-item{min-width:50%}}
+  </style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <span class="top-nav-brand">Procurement AI</span>
+  <a href="/">New Search</a>
+  <a href="/history" class="active">History</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-badge">Session History</div>
+  <h1>All <span>Searches</span></h1>
+  <p class="hero-sub">Every procurement search — steps, data, and reports saved automatically</p>
+</header>
+
+<div class="stats-strip" id="stats-strip">
+  <div class="stat-item"><span class="stat-num" id="stat-total">—</span><span class="stat-label">Total</span></div>
+  <div class="stat-item"><span class="stat-num" id="stat-done">—</span><span class="stat-label">Completed</span></div>
+  <div class="stat-item"><span class="stat-num gold" id="stat-running">—</span><span class="stat-label">Running</span></div>
+  <div class="stat-item"><span class="stat-num red" id="stat-failed">—</span><span class="stat-label">Failed</span></div>
+  <div class="stat-item"><span class="stat-num purple" id="stat-products">—</span><span class="stat-label">Products</span></div>
+</div>
+
+<main class="container">
+  <div class="section-header">
+    <span class="section-title">Recent Sessions</span>
+    <button class="refresh-btn" onclick="loadHistory()">↻ Refresh</button>
+  </div>
+  <div class="sessions-list" id="sessions-list">
+    <div class="empty-state"><div class="empty-icon">🔍</div><h3>Loading…</h3></div>
+  </div>
+</main>
+
+<script>
+const STEP_LABELS={1:"LLM Search Queries",2:"Tavily Search Results",3:"Product Data (price + image)",4:"Scored & Ranked Products",5:"Introduction Paragraph",6:"Recommendation Paragraph",7:"HTML Report"};
+function formatDate(iso){if(!iso)return"—";try{return new Date(iso).toLocaleString("en-EG",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}catch{return iso}}
+function statusBadge(s){const m={completed:"badge-completed",failed:"badge-failed",running:"badge-running"};return`<span class="status-badge ${m[s]||'badge-running'}">${s}</span>`}
+function dotClass(s){return s==="completed"?"dot-completed":s==="failed"?"dot-failed":"dot-running"}
+async function loadHistory(){
+  try{
+    const statsResp=await fetch("/api/stats");const stats=await statsResp.json();
+    document.getElementById("stat-total").textContent=stats.total_searches;
+    document.getElementById("stat-done").textContent=stats.completed;
+    document.getElementById("stat-running").textContent=stats.running;
+    document.getElementById("stat-failed").textContent=stats.failed;
+    document.getElementById("stat-products").textContent=stats.total_products;
+    const resp=await fetch("/api/sessions");const sessions=await resp.json();
+    const list=document.getElementById("sessions-list");
+    if(!sessions.length){list.innerHTML=`<div class="empty-state"><div class="empty-icon">📭</div><h3>No searches yet</h3><p style="margin-top:.4rem"><a href="/" style="color:var(--accent)">Start your first search →</a></p></div>`;return}
+    list.innerHTML=sessions.map((s,idx)=>{
+      const hasReport=s.status==="completed";
+      const topChip=s.top_product?`<div class="top-chip"><span>★ #1:</span> ${s.top_product}</div>`:"";
+      const scoreChip=s.top_score?`<span class="card-meta">${s.top_score}/110</span>`:"";
+      return`<div class="session-card status-${s.status}" id="card-${idx}">
+        <div class="card-header" onclick="toggleSteps(${idx},'${s.session_id}')">
+          <div class="status-dot ${dotClass(s.status)}"></div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+              <span class="card-title">${s.product_name}</span>
+              ${statusBadge(s.status)}${scoreChip}
+            </div>
+            <div style="display:flex;gap:.85rem;margin-top:.18rem;flex-wrap:wrap">
+              <span class="card-meta">${formatDate(s.started_at)}</span>
+              <span class="card-target">Target EGP ${Number(s.target_price||0).toLocaleString()}</span>
+              <span class="card-meta">${s.total_products||0} products</span>
+            </div>
+          </div>
+          <span style="color:var(--muted);font-size:.75rem" id="chevron-${idx}">▸</span>
+        </div>
+        <div class="card-actions">
+          ${topChip}
+          ${hasReport?`<a href="/report/${s.session_id}" target="_blank" class="btn btn-primary">View Report</a>`:""}
+          <button class="btn btn-secondary" onclick="toggleSteps(${idx},'${s.session_id}')">Steps</button>
+          <a href="/api/sessions/${s.session_id}/steps" target="_blank" class="btn btn-ghost">JSON</a>
+        </div>
+        <div class="steps-panel" id="steps-${idx}">
+          <div class="steps-title">Agent Steps</div>
+          <div class="step-list" id="steplist-${idx}"><div style="color:var(--muted);font-size:.75rem">Loading steps…</div></div>
+        </div>
+      </div>`
+    }).join("")
+  }catch(e){document.getElementById("sessions-list").innerHTML=`<div class="empty-state"><div class="empty-icon">⚠️</div><h3>Error loading history</h3><p style="color:var(--muted);font-size:.8rem">${e.message}</p></div>`}
+}
+async function toggleSteps(idx,sessionId){
+  const panel=document.getElementById(`steps-${idx}`);
+  const chevron=document.getElementById(`chevron-${idx}`);
+  const stepList=document.getElementById(`steplist-${idx}`);
+  const isOpen=panel.classList.contains("open");
+  panel.classList.toggle("open");chevron.textContent=isOpen?"▸":"▾";
+  if(!isOpen&&stepList.innerHTML.includes("Loading")){
+    try{
+      const resp=await fetch(`/api/sessions/${sessionId}/steps`);const steps=await resp.json();
+      if(!steps.length){stepList.innerHTML=`<div style="color:var(--muted);font-size:.75rem">No steps saved yet.</div>`;return}
+      stepList.innerHTML=steps.map((step,si)=>{
+        const label=STEP_LABELS[step.step]||step.label;
+        const isReport=step.step===7;
+        const preview=isReport?null:JSON.stringify(step.data,null,2);
+        return`<div class="step-item">
+          <div class="step-num">${step.step}</div>
+          <span class="step-label">${label}</span>
+          <span class="step-meta">${step.saved_at?new Date(step.saved_at).toLocaleTimeString("en-EG"):""}</span>
+          ${!isReport?`<button class="step-expand" onclick="toggleJson(this,'json-${idx}-${si}')">view</button>`:""}
+        </div>${!isReport?`<pre class="step-json" id="json-${idx}-${si}">${escapeHtml(preview)}</pre>`:""}`
+      }).join("")
+    }catch(e){stepList.innerHTML=`<div style="color:var(--red);font-size:.75rem">Failed: ${e.message}</div>`}
+  }
+}
+function toggleJson(btn,id){const el=document.getElementById(id);el.classList.toggle("open");btn.textContent=el.classList.contains("open")?"hide":"view"}
+function escapeHtml(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+loadHistory();
+setInterval(async()=>{const r=await fetch("/api/sessions").catch(()=>null);if(!r)return;const s=await r.json().catch(()=>[]);if(s.some(x=>x.status==="running"))loadHistory()},15000);
+</script>
+</body>
+</html>

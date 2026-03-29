@@ -1,0 +1,70 @@
+Python-dotenv could not parse statement starting at line 5
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+INFO | app.main | ✅ Database tables created
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO | app.routers.search | [20260328_073520_4865ba] START  product='coffee machine'  target=EGP 10000.0
+INFO | app.routers.search | [20260328_073520_4865ba] Step 1 — generating LLM search queries
+INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO | app.routers.search | [20260328_073520_4865ba] Step 2 — running Tavily searches
+INFO | app.services.search_service | 🔍 coffee machine site:amazon.eg
+INFO | app.services.search_service | 🔍 buy coffee machine Egypt site:amazon.eg
+INFO | app.services.search_service | 🔍 coffee machine price EGP site:amazon.eg
+INFO | app.services.search_service | 🔍 coffee machine site:jumia.com.eg
+INFO | app.services.search_service | 🔍 buy coffee machine Egypt site:jumia.com.eg
+INFO | app.services.search_service | 🔍 coffee machine price EGP site:jumia.com.eg
+INFO | app.services.search_service | 🔍 coffee machine site:noon.com/egypt-en
+INFO | app.services.search_service | 🔍 buy coffee machine Egypt site:noon.com/egypt-en
+INFO | app.services.search_service | 🔍 coffee machine price EGP site:noon.com/egypt-en
+INFO | app.routers.search | [20260328_073520_4865ba] Step 2 done — 80 results
+INFO | app.routers.search | [20260328_073520_4865ba] Step 3 — building product data
+INFO | app.routers.search | [20260328_073520_4865ba]   processing: https://www.amazon.eg/-/en/gp/bestsellers/home/21864088031
+INFO | app.services.search_service | ⏭ Skipping Amazon non-product: https://www.amazon.eg/-/en/gp/bestsellers/home/21864088
+INFO | app.routers.search | [20260328_073520_4865ba]   processing: https://www.amazon.eg/-/en/Genio-Plus-Espresso-Coffee-Machin
+INFO | app.services.search_service | 💰 Fetching price for: Genio S Plus Espresso and Coffee Machine - ED
+INFO | app.clients.tavily_client | ✅ Price from extract(): EGP 7001 | https://www.amazon.eg/-/en/Genio-Plus-Espresso-Coffee-M
+INFO | app.services.search_service | 🖼  Fetching image for: Genio S Plus Espresso and Coffee Machine - ED
+INFO | app.clients.tavily_client | 🖼 Image from SERP images (amazon.eg)
+INFO | app.routers.search | [20260328_073520_4865ba]   processing: https://www.amazon.eg/-/en/Siphon-Coffee-Machine-Manual-Tran
+INFO | app.services.search_service | 🖼  Fetching image for: Siphon Coffee Machine Set Coffee Maker Home M
+INFO | app.clients.tavily_client | 🖼 Image from SERP images (amazon.eg)
+INFO | app.routers.search | [20260328_073520_4865ba]   processing: https://www.amazon.eg/-/en/Nespresso-Essenza-EN85-B-DeLonghi
+INFO | app.services.search_service | 💰 Fetching price for: Nespresso Essenza Mini EN85.B, De'Longhi Coff
+INFO | app.clients.tavily_client | ✅ Price from extract(): EGP 9501 | https://www.amazon.eg/-/en/Nespresso-Essenza-EN85-B-DeL
+INFO | app.services.search_service | 🖼  Fetching image for: Nespresso Essenza Mini EN85.B, De'Longhi Coff
+INFO | app.clients.tavily_client | 🖼 Image from SERP images (amazon.eg)
+INFO | app.routers.search | [20260328_073520_4865ba]   processing: https://www.amazon.eg/-/en/Espresso-Machines/b?ie=UTF8&node=
+INFO | app.services.search_service | ⏭ Skipping non-product URL: https://www.amazon.eg/-/en/Espresso-Machines/b?ie=UTF8&
+INFO | app.routers.search | [20260328_073520_4865ba]   processing: https://www.amazon.eg/-/en/Solac-ce4504-espresso-cappuccino-
+INFO | app.services.search_service | 🖼  Fetching image for: Solac ce4504 pump espresso & cappuccino coffe
+INFO | app.clients.tavily_client | 🖼 Image from SERP images (amazon.eg)
+INFO | app.routers.search | [20260328_073520_4865ba]   processing: https://www.amazon.eg/-/en/ECOFFEE-Automatic-Machine-Espress
+INFO | app.services.search_service | 🖼  Fetching image for: ECOFFEE Automatic Coffee Machine 3 In 1 Espre
+INFO | app.clients.tavily_client | 🖼 Image from SERP images (amazon.eg)
+INFO | app.routers.search | [20260328_073520_4865ba]   processing: https://www.amazon.eg/-/en/Maxxpresso-M3-Portable-Machine-Fr
+INFO | app.services.search_service | 💰 Fetching price for: Maxxpresso M3 All IN ONE Portable Coffee Mach
+INFO | app.clients.tavily_client | ✅ Price from SERP (amazon.eg): EGP 4001
+INFO | app.services.search_service | 🖼  Fetching image for: Maxxpresso M3 All IN ONE Portable Coffee Mach
+INFO | app.clients.tavily_client | 🖼 Image from SERP images (amazon.eg)
+INFO | app.routers.search | [20260328_073520_4865ba]   processing: https://www.amazon.eg/-/en/Arzum-Okka-Turkish-Coffee-Machine
+INFO | app.services.search_service | 🖼  Fetching image for: Arzum Okka - Rich Turkish Coffee Machine - Ch
+INFO | app.clients.tavily_client | 🖼 Image from SERP images (amazon.eg)
+INFO | app.routers.search | [20260328_073520_4865ba]   processing: https://www.amazon.eg/-/en/MAGNIFICA-Automatic-Functions-Cap
+INFO | app.services.search_service | 💰 Fetching price for: DE'LONGHI Coffee Machine MAGNIFICA S Fully Au
+INFO | app.clients.tavily_client | ✅ Price from extract(): EGP 29001 | https://www.amazon.eg/-/en/MAGNIFICA-Automatic-Function
+INFO | app.services.search_service | 🖼  Fetching image for: DE'LONGHI Coffee Machine MAGNIFICA S Fully Au
+INFO | app.clients.tavily_client | 🖼 Image from SERP images (amazon.eg)
+INFO | app.routers.search | [20260328_073520_4865ba] Step 3 done — 10 products built
+INFO | app.routers.search | [20260328_073520_4865ba] Step 4 — scoring products
+INFO | app.routers.search | [20260328_073520_4865ba] Step 4 done — top score: 101
+INFO | app.routers.search | [20260328_073520_4865ba] Step 5 — generating introduction
+INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO | app.routers.search | [20260328_073520_4865ba] Step 6 — generating recommendation
+INFO | httpx | HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO | app.routers.search | [20260328_073520_4865ba] Step 7 — building HTML report
+INFO | app.routers.search | [20260328_073520_4865ba] DONE  — 10 products, session saved
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1]

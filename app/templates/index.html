@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Procurement AI — Egypt Market</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --dark:#0d1117;--dark2:#161b22;--dark3:#21262d;
+      --accent:#00d4aa;--purple:#a78bfa;--gold:#f0b429;
+      --text:#e6edf3;--muted:#8b949e;--border:rgba(255,255,255,.08);--radius:12px;
+      --fs-xs:.72rem;--fs-sm:.82rem;--fs-base:.9rem;--fs-md:1rem;
+      --fw-normal:400;--fw-medium:500;--fw-semi:600;
+    }
+    body{font-family:'Inter',system-ui,sans-serif;font-size:var(--fs-base);font-weight:var(--fw-normal);background:var(--dark);color:var(--text);min-height:100vh;display:flex;flex-direction:column;line-height:1.6}
+
+    /* NAV */
+    .top-nav{background:var(--dark2);border-bottom:1px solid var(--border);padding:.6rem 1.75rem;display:flex;gap:.75rem;align-items:center}
+    .top-nav a{color:var(--muted);text-decoration:none;font-size:var(--fs-sm);font-weight:var(--fw-medium);padding:.28rem .65rem;border-radius:6px;transition:color .2s,background .2s}
+    .top-nav a:hover,.top-nav a.active{color:var(--accent);background:rgba(0,212,170,.08)}
+    .top-nav-brand{font-size:.88rem;font-weight:var(--fw-semi);color:var(--accent);margin-right:auto;letter-spacing:-.01em}
+
+    /* HERO */
+    .hero{background:linear-gradient(135deg,#0d1117 0%,#0a2540 50%,#0d1117 100%);border-bottom:1px solid var(--border);padding:4rem 2rem 3.5rem;text-align:center;flex-shrink:0}
+    .hero-badge{display:inline-block;background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.25);color:var(--accent);font-size:var(--fs-xs);font-weight:var(--fw-semi);letter-spacing:.1em;text-transform:uppercase;padding:.28rem .85rem;border-radius:999px;margin-bottom:1.25rem}
+    .hero h1{font-size:clamp(1.7rem,4vw,2.8rem);font-weight:var(--fw-semi);line-height:1.15;letter-spacing:-.02em;margin-bottom:.6rem}
+    .hero h1 span{color:var(--accent)}
+    .hero-sub{color:var(--muted);font-size:var(--fs-sm);max-width:460px;margin:0 auto 2.5rem;line-height:1.7}
+
+    /* FORM */
+    .search-form{background:var(--dark2);border:1px solid var(--border);border-radius:14px;padding:1.75rem;max-width:520px;margin:0 auto;text-align:left}
+    .form-row{margin-bottom:1rem}
+    .form-row label{display:block;font-size:var(--fs-xs);font-weight:var(--fw-semi);color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem}
+    .form-row input{width:100%;background:var(--dark3);border:1px solid var(--border);border-radius:7px;padding:.58rem .85rem;color:var(--text);font-size:var(--fs-sm);font-family:inherit;outline:none;transition:border-color .2s}
+    .form-row input:focus{border-color:rgba(0,212,170,.5)}
+    .form-row input::placeholder{color:var(--muted);opacity:.7}
+    .form-row-group{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+    .hint{font-size:var(--fs-xs);color:var(--muted);margin-top:.25rem;opacity:.8}
+    .submit-btn{width:100%;background:var(--accent);color:#0d1117;font-family:inherit;font-weight:var(--fw-semi);font-size:var(--fs-sm);padding:.78rem;border:none;border-radius:9px;cursor:pointer;transition:opacity .2s,transform .1s;margin-top:.5rem;letter-spacing:.01em}
+    .submit-btn:hover{opacity:.88}
+    .submit-btn:active{transform:scale(.99)}
+    .submit-btn:disabled{opacity:.45;cursor:not-allowed}
+
+    /* LOADING */
+    .loading-overlay{display:none;position:fixed;inset:0;background:rgba(13,17,23,.93);z-index:100;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;text-align:center}
+    .loading-overlay.show{display:flex}
+    .spinner{width:40px;height:40px;border:2.5px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading-title{font-size:var(--fs-md);font-weight:var(--fw-semi)}
+    .loading-steps{display:flex;flex-direction:column;gap:.35rem;margin-top:.4rem}
+    .loading-step{font-size:var(--fs-xs);color:var(--muted);transition:color .3s}
+    .loading-step.active{color:var(--accent);font-weight:var(--fw-medium)}
+    .loading-step.done{color:#4ade80}
+
+    /* RESULT */
+    .result-section{display:none;max-width:520px;margin:1.75rem auto 0;background:var(--dark2);border:1px solid rgba(0,212,170,.25);border-radius:var(--radius);padding:1.35rem}
+    .result-section.show{display:block}
+    .result-title{font-size:var(--fs-sm);font-weight:var(--fw-semi);color:var(--accent);margin-bottom:.8rem}
+    .result-row{display:flex;justify-content:space-between;align-items:center;font-size:var(--fs-xs);padding:.38rem 0;border-bottom:1px solid var(--border)}
+    .result-row:last-child{border-bottom:none}
+    .result-label{color:var(--muted)}
+    .result-value{font-weight:var(--fw-medium)}
+    .result-actions{display:flex;gap:.55rem;margin-top:1rem;flex-wrap:wrap}
+    .action-btn{flex:1;text-align:center;padding:.5rem .9rem;border-radius:7px;font-size:var(--fs-xs);font-weight:var(--fw-semi);text-decoration:none;cursor:pointer;border:none;transition:opacity .2s}
+    .action-primary{background:var(--accent);color:#0d1117}
+    .action-primary:hover{opacity:.85}
+    .action-secondary{background:rgba(167,139,250,.13);color:var(--purple);border:1px solid rgba(167,139,250,.28)}
+    .action-secondary:hover{background:rgba(167,139,250,.22)}
+
+    .error-box{display:none;max-width:520px;margin:1.25rem auto 0;background:rgba(248,81,73,.07);border:1px solid rgba(248,81,73,.22);border-radius:var(--radius);padding:.9rem 1.1rem;font-size:var(--fs-xs);color:#f85149}
+    .error-box.show{display:block}
+
+    /* FEATURES */
+    .features{max-width:860px;margin:3.5rem auto;padding:0 1.5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.9rem}
+    .feature{background:var(--dark2);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem}
+    .feature-icon{font-size:1.25rem;margin-bottom:.5rem}
+    .feature-title{font-size:var(--fs-sm);font-weight:var(--fw-semi);margin-bottom:.28rem;letter-spacing:-.01em}
+    .feature-desc{font-size:var(--fs-xs);color:var(--muted);line-height:1.65}
+
+    footer{margin-top:auto;text-align:center;padding:1.75rem;color:var(--muted);font-size:var(--fs-xs);border-top:1px solid var(--border)}
+    @media(max-width:480px){.form-row-group{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <span class="top-nav-brand">Procurement AI</span>
+  <a href="/" class="active">New Search</a>
+  <a href="/history">History</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-badge">Egypt E-Commerce Intelligence</div>
+  <h1>Find the <span>Best Price</span><br>for Any Product</h1>
+  <p class="hero-sub">Enter a product and your target budget — we search Amazon.eg, Jumia.eg, and Noon.eg, then rank every result by closeness to your price.</p>
+
+  <div class="search-form">
+    <div class="form-row">
+      <label>Product Name</label>
+      <input type="text" id="product_name" placeholder="e.g. standing desk, gaming chair, laptop" autofocus>
+    </div>
+    <div class="form-row-group">
+      <div class="form-row">
+        <label>Target Price (EGP)</label>
+        <input type="number" id="target_price" placeholder="5000" min="1">
+      </div>
+      <div class="form-row">
+        <label>Tolerance %</label>
+        <input type="number" id="tolerance" value="30" min="0" max="100">
+        <div class="hint">± % from target</div>
+      </div>
+    </div>
+    <div class="form-row-group">
+      <div class="form-row">
+        <label>Company Name</label>
+        <input type="text" id="company_name" value="TechSphere">
+      </div>
+      <div class="form-row">
+        <label>Max Results</label>
+        <input type="number" id="top_picks" value="10" min="1" max="20">
+      </div>
+    </div>
+    <button class="submit-btn" id="search-btn" onclick="startSearch()">Search & Rank Products</button>
+  </div>
+
+  <div class="error-box" id="error-box"></div>
+  <div class="result-section" id="result-section">
+    <div class="result-title">Search Complete</div>
+    <div class="result-row"><span class="result-label">Session ID</span><span class="result-value" id="r-session" style="font-size:.7rem;font-family:'DM Mono',monospace;color:var(--muted)"></span></div>
+    <div class="result-row"><span class="result-label">Products Found</span><span class="result-value" id="r-count" style="color:var(--accent)"></span></div>
+    <div class="result-row"><span class="result-label">Top Pick</span><span class="result-value" id="r-top" style="font-size:.75rem;max-width:240px;text-align:right"></span></div>
+    <div class="result-row"><span class="result-label">Top Score</span><span class="result-value" id="r-score"></span></div>
+    <div class="result-actions">
+      <a id="r-report-btn" href="#" target="_blank" class="action-btn action-primary">Open Report</a>
+      <a href="/history" class="action-btn action-secondary">View History</a>
+    </div>
+  </div>
+</header>
+
+<div class="features">
+  <div class="feature"><div class="feature-icon">🎯</div><div class="feature-title">Target Price Ranking</div><div class="feature-desc">Products closest to your budget score highest — not just the cheapest.</div></div>
+  <div class="feature"><div class="feature-icon">💾</div><div class="feature-title">Every Step Saved</div><div class="feature-desc">Each agent step saved as JSON to disk automatically.</div></div>
+  <div class="feature"><div class="feature-icon">🤖</div><div class="feature-title">LLM Introduction</div><div class="feature-desc">Groq writes a professional intro and recommendation for each report.</div></div>
+  <div class="feature"><div class="feature-icon">📊</div><div class="feature-title">7-Criterion Scoring</div><div class="feature-desc">Price, competitiveness, target proximity, description, image, title, relevance.</div></div>
+</div>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-title">Running Procurement Search…</div>
+  <div class="loading-steps">
+    <div class="loading-step" id="ls-1">Step 1 — Generating search queries</div>
+    <div class="loading-step" id="ls-2">Step 2 — Searching Amazon, Jumia, Noon</div>
+    <div class="loading-step" id="ls-3">Step 3 — Fetching prices &amp; images</div>
+    <div class="loading-step" id="ls-4">Step 4 — Scoring &amp; ranking products</div>
+    <div class="loading-step" id="ls-5">Step 5 — Writing introduction</div>
+    <div class="loading-step" id="ls-6">Step 6 — Writing recommendation</div>
+    <div class="loading-step" id="ls-7">Step 7 — Building HTML report</div>
+  </div>
+</div>
+
+<footer>Procurement AI — Egypt Market · Amazon.eg · Jumia.eg · Noon.eg</footer>
+
+<script>
+let stepTimer = null;
+function animateSteps() {
+  const steps = [1,2,3,4,5,6,7];
+  const delays = [2000,8000,25000,3000,4000,4000,2000];
+  let i = 0;
+  function next() {
+    if (i > 0) document.getElementById(`ls-${steps[i-1]}`).className = "loading-step done";
+    if (i < steps.length) {
+      document.getElementById(`ls-${steps[i]}`).className = "loading-step active";
+      stepTimer = setTimeout(next, delays[i]);
+      i++;
+    }
+  }
+  next();
+}
+async function startSearch() {
+  const product = document.getElementById("product_name").value.trim();
+  const price   = parseFloat(document.getElementById("target_price").value);
+  const tol     = parseFloat(document.getElementById("tolerance").value) || 30;
+  const company = document.getElementById("company_name").value.trim() || "TechSphere";
+  const picks   = parseInt(document.getElementById("top_picks").value) || 10;
+  const errBox  = document.getElementById("error-box");
+  errBox.className = "error-box";
+  if (!product) { errBox.textContent = "Please enter a product name."; errBox.className = "error-box show"; return; }
+  if (!price || price <= 0) { errBox.textContent = "Please enter a valid target price."; errBox.className = "error-box show"; return; }
+  document.getElementById("search-btn").disabled = true;
+  document.getElementById("result-section").className = "result-section";
+  document.getElementById("loading").className = "loading-overlay show";
+  for (let i = 1; i <= 7; i++) document.getElementById(`ls-${i}`).className = "loading-step";
+  animateSteps();
+  try {
+    const resp = await fetch("/search", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({product_name:product,target_price:price,price_tolerance_pct:tol,company_name:company,top_picks:picks}),
+    });
+    clearTimeout(stepTimer);
+    document.getElementById("loading").className = "loading-overlay";
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({detail: resp.statusText}));
+      errBox.textContent = "Error: " + (err.detail || "Unknown error");
+      errBox.className = "error-box show";
+      return;
+    }
+    const data = await resp.json();
+    const top  = data.products && data.products[0];
+    document.getElementById("r-session").textContent = data.job_id;
+    document.getElementById("r-count").textContent   = data.total_found + " products";
+    document.getElementById("r-top").textContent     = top ? top.product_title.substring(0,55) + "…" : "—";
+    document.getElementById("r-score").textContent   = top ? `${top.score}/110` : "—";
+    document.getElementById("r-report-btn").href     = data.report_url || `/report/${data.job_id}`;
+    document.getElementById("result-section").className = "result-section show";
+  } catch(e) {
+    clearTimeout(stepTimer);
+    document.getElementById("loading").className = "loading-overlay";
+    errBox.textContent = "Network error: " + e.message;
+    errBox.className = "error-box show";
+  } finally {
+    document.getElementById("search-btn").disabled = false;
+  }
+}
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && document.activeElement.tagName === "INPUT") startSearch();
+});
+</script>
+</body>
+</html>
